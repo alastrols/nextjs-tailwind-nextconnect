@@ -59,6 +59,8 @@ const Login = ({}: Props) => {
                 location.reload();
               });
               return false;
+            } else {
+              console.log(data);
             }
           });
         })

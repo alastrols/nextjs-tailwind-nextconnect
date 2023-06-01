@@ -43,8 +43,11 @@ const router = createRouter<NextApiRequest, NextApiResponse>();
 
 // Middleware
 router.use(async (req: NextApiRequest, res: NextApiResponse, next) => {
-  const decoded = await adminAuth(req, res);
-  req.decoded = decoded;
+  const action = req.query["auth"] ?? [];
+  if (action[0] != "login") {
+    const decoded = await adminAuth(req, res);
+    req.decoded = decoded;
+  }
   await next();
 });
 
