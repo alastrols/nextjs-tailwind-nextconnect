@@ -1,0 +1,164 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+  font-family: "DB Heavent";
+  font-size: 16px !important;
+  scroll-behavior: smooth !important;
+}
+
+a {
+  text-decoration: none !important;
+}
+
+img {
+  object-fit: contain;
+  width: 100% !important;
+  position: relative !important;
+  height: unset !important;
+}
+
+.menu ul {
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+.menu ul li {
+  display: inline-block;
+  margin: auto 35px;
+  transition: all 0.3s ease-in-out;
+  position: relative;
+}
+.menu ul li:hover .submenu {
+  height: auto;
+}
+.menu ul li:hover a {
+  color: #000;
+}
+.menu ul li:hover a::before {
+  visibility: visible;
+  transform: scale(1, 1);
+}
+.menu ul li.non-ac:hover a::before {
+  visibility: visible;
+  transform: scale(0, 0);
+}
+
+.menu ul li .submenu {
+  overflow: hidden;
+  position: absolute;
+  right: -50%;
+  width: 200px;
+  background-color: #000;
+  height: 0;
+  line-height: 15px;
+  box-sizing: border-box;
+  transition: 0.3s ease-in-out;
+  transition-delay: 0.1s;
+  border-radius: 15px;
+  margin-top: 0px;
+  z-index: 1;
+}
+.menu ul li .submenu::after ,
+.menu ul li .submenu::before {
+  border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 20px solid #eee;
+    bottom: -20px;
+    content: '';
+    left: 50%;
+    margin-left: -20px;
+    position: absolute;
+}
+
+.menu ul li .submenu::before {
+  border-left: 23px solid transparent;
+  border-right: 23px solid transparent;
+  border-top: 23px solid;
+  border-top-color: inherit; /* Can't be included in the shorthand to work */
+  bottom: -23px;
+  margin-left: -23px;
+}
+
+.menu ul li .submenu li{
+  display: block;
+  margin: 20px 0;
+}
+.menu ul li .submenu a {
+  color: #fff;
+  margin-top: 0px;
+  font-size: 18px;
+  display: inline-block;
+  padding: 0;
+}
+.menu ul li .submenu a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+.menu ul li a {
+  font-family: "DB Heavent";
+  font-size: 24px;
+  color: #000;
+  display: block;
+  padding: 0 7px 0 7px;
+  margin: 0;
+  text-decoration: none;
+  position: relative;
+}
+
+.menu ul li a::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: -5px;
+  left: 0px;
+  background-color: #000;
+  transition: all 0.2s ease-in-out;
+  transform: scale(0, 0);
+  visibility: hidden;
+}
+
+.menu ul li .submenu li:hover a::before {
+  visibility: visible;
+  transform: scale(1, 1);
+}
+
+.menu ul li .submenu a::before {
+  background-color: #fff;
+  transition: all 0.2s ease-in-out;
+  transform: scale(0, 0);
+  visibility: hidden;
+}
+
+.menu-5{
+  border: 1px solid #000;
+  border-radius: 30px;
+  padding: 0 20px;
+}
+
+.menu ul .menu-5:hover{
+  background-color: #000;
+}
+
+.menu ul .menu-5:hover a{
+  color: #fff;
+}
+
+.menu ul .menu-5:hover a::before{
+  visibility: hidden;
+}
+
+@media screen and (max-width: 1366px) {
+}
+
+@media screen and (max-width: 1180px) {
+}
+
+@media screen and (max-width: 820px) {
+}
+
+@media screen and (max-width: 767px) {
+}

@@ -1,0 +1,11 @@
+@font-face {
+  font-family: "DB Heavent";
+  src: url("../font/DBHeavent.eot");
+  src: url("../font/DBHeavent.eot?#iefix") format("embedded-opentype"),
+    url("../font/DBHeavent.woff2") format("woff2"),
+    url("../font/DBHeavent.woff") format("woff"),
+    url("../font/DBHeavent.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
