@@ -1,11 +1,12 @@
-import image1 from "@/public/static/images/slide-1.jpg";
+// import image1 from "@/public/static/images/slide-1.jpg";
 import React from "react";
-export const images: string[] = [
-  image1.src,
-];
+// export const images: string[] = [
+//   image1.src,
+// ];
 
 const ImagebyBanner = (index: number): string => {
-  return images[index % images.length];
+  // return images[index % images.length];
+  return "";
 };
 
 // export const images: string[] = [image1, image2, image3, image4]
