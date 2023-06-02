@@ -3,16 +3,7 @@ import { NextPage } from "next/types";
 import React, { useState } from "react";
 import { appDispatch, appSelector } from "@/store/hooks";
 import Layout from "@/components/admin/Layout/Layout";
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Grid,
-  Modal,
-  Stack,
-  TextField,
-} from "@mui/material";
+import { Button, Stack, TextField } from "@mui/material";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -27,7 +18,7 @@ import { alpha } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import EditIcon from "@mui/icons-material/Edit";
 import Tooltip from "@mui/material/Tooltip";
 import Swal from "sweetalert2";
 import router from "next/router";
@@ -36,68 +27,32 @@ import { getComparator, stableSort, Order } from "@/components/table/Table";
 import {
   EnhancedTableHead,
   EnhancedTableToolbarProps,
-} from "@/components/table/admin/contact/TableHeads";
-import {
-  getContact,
-  deleteContact,
-  deleteAllContact,
-  getContactById,
-} from "@/features/admin/contact";
-import saveAsExcel from "@/features/admin/contact/export";
-import { Field, Form, Formik, FormikProps, useFormik } from "formik";
-import { TextField as TextFieldInput } from "formik-material-ui";
-import Textarea from "@mui/joy/Textarea";
-const User: NextPage = () => {
+} from "@/components/table/admin/news/TableHeads";
+import { getNews, deleteNews, deleteAllNews } from "@/features/admin/news";
+import saveAsExcel from "@/features/admin/news/export";
+
+const News: NextPage = () => {
   const dispatch = appDispatch();
   const [searched, setSearched] = React.useState<string>("");
-  const { data } = appSelector((state) => state.contact);
+  const { data } = appSelector((state) => state.news);
   const [order, setOrder] = useState<Order>("asc");
   const [orderBy, setOrderBy] = useState<any>("");
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [openView, setOpenView] = React.useState(false);
 
   var rows: any = data ?? [];
-
-  const formik: any = useFormik({
-    initialValues: {
-      contact_id: "",
-      fullname: "",
-      company_name: "",
-      phone_number: "",
-      email: "",
-      subject: "",
-      message: "",
-      created_at: "",
-    },
-    onSubmit: (values) => {
-      //handling submit
-    },
-  });
-  const style = {
-    position: "absolute" as "absolute",
-    top: "60%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "100%",
-    overflow: "scroll",
-    height: "100%",
-    display: "block",
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
+  const exports = () => {
+    saveAsExcel({ rows });
   };
-
   // *************************** Use Effect ***************************
   React.useEffect(() => {
-    dispatch(getContact());
+    dispatch(getNews());
   }, [dispatch]);
 
   React.useEffect(() => {
-    dispatch(getContact(searched));
+    dispatch(getNews(searched));
   }, [dispatch, searched]);
   // *************************** Use Effect ***************************
 
@@ -115,11 +70,11 @@ const User: NextPage = () => {
       setSelected([]);
       if (result.isConfirmed) {
         let data = new FormData();
-        data.append("contact_id", id);
+        data.append("news_id", id);
         Swal.fire("Deleted!", "Your data has been deleted.", "success").then(
           function () {
-            dispatch(deleteContact(data)).then((result: any) => {
-              dispatch(getContact());
+            dispatch(deleteNews(data)).then((result: any) => {
+              dispatch(getNews());
             });
           }
         );
@@ -140,8 +95,8 @@ const User: NextPage = () => {
       if (result.isConfirmed) {
         Swal.fire("Deleted!", "Your data has been deleted.", "success").then(
           function () {
-            dispatch(deleteAllContact(id)).then((result: any) => {
-              dispatch(getContact());
+            dispatch(deleteAllNews(id)).then((result: any) => {
+              dispatch(getNews());
             });
           }
         );
@@ -149,32 +104,6 @@ const User: NextPage = () => {
     });
   };
 
-  const exports = () => {
-    saveAsExcel({ rows });
-  };
-
-  const openViewModal = (id: any) => {
-    dispatch(getContactById(id)).then((value: any) => {
-      formik.setValues({
-        contact_id: value.payload[0].contact_id,
-        fullname: value.payload[0].fullname,
-        company_name: value.payload[0].company_name,
-        phone_number: value.payload[0].phone_number,
-        email: value.payload[0].email,
-        subject: value.payload[0].subject,
-        message: value.payload[0].message,
-        created_at: value.payload[0].created_at,
-      });
-    });
-    setOpenView(true);
-    setSelected([]);
-  };
-
-  const setClose = () => {
-    dispatch(getContact(searched));
-    setOpenView(false);
-    setSelected([]);
-  };
   // *************************** Action ***************************
 
   // *************************** Fix Table ***************************
@@ -190,7 +119,7 @@ const User: NextPage = () => {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n: any) => n.contact_id);
+      const newSelected = rows.map((n: any) => n.news_id);
       setSelected(newSelected);
       return;
     }
@@ -233,65 +162,6 @@ const User: NextPage = () => {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-  const showForm = ({ values, setFieldValue, isValid }: FormikProps<any>) => {
-    return (
-      <Form>
-        <Card>
-          <CardContent sx={{ padding: 4 }}>
-            <Field
-              style={{ marginTop: 16 }}
-              fullWidth
-              component={TextFieldInput}
-              name="fullname"
-              type="text"
-              label="Fullname"
-            />
-            <br />
-
-            <Field
-              style={{ marginTop: 16 }}
-              fullWidth
-              component={TextFieldInput}
-              name="username"
-              type="text"
-              label="Username"
-            />
-            <br />
-
-            <Field
-              style={{ marginTop: 16 }}
-              fullWidth
-              component={TextFieldInput}
-              name="password"
-              type="text"
-              label="Password"
-            />
-            <br />
-
-            <Field
-              style={{ marginTop: 16 }}
-              fullWidth
-              component={TextFieldInput}
-              name="email"
-              type="text"
-              label="Email"
-            />
-          </CardContent>
-          <CardActions>
-            <Button
-              variant="contained"
-              color="error"
-              fullWidth
-              onClick={setClose}
-            >
-              Cancel
-            </Button>
-          </CardActions>
-        </Card>
-      </Form>
-    );
-  };
-
   function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     const { numSelected, valSelected } = props;
 
@@ -325,7 +195,7 @@ const User: NextPage = () => {
             id="tableTitle"
             component="div"
           >
-            Contact
+            News
           </Typography>
         )}
         {numSelected > 0 ? (
@@ -361,7 +231,14 @@ const User: NextPage = () => {
             numSelected={selected.length}
             valSelected={selected}
           />
-
+          <Button
+            sx={{ ml: 2, mb: 1 }}
+            variant="contained"
+            color="primary"
+            onClick={() => router.push("/admin/news/add")}
+          >
+            Add News
+          </Button>
           <Button
             sx={{ ml: 2, mb: 1, flexGrow: 1 }}
             onClick={exports}
@@ -370,7 +247,6 @@ const User: NextPage = () => {
           >
             Export to Excel
           </Button>
-
           <TableContainer>
             <Table
               sx={{ minWidth: 750 }}
@@ -393,19 +269,17 @@ const User: NextPage = () => {
                         page * rowsPerPage + rowsPerPage
                       )
                       .map((row: any, index) => {
-                        const isItemSelected = isSelected(row.contact_id);
+                        const isItemSelected = isSelected(row.news_id);
                         const labelId = `enhanced-table-checkbox-${index}`;
 
                         return (
                           <TableRow
                             hover
-                            onClick={(event) =>
-                              handleClick(event, row.contact_id)
-                            }
+                            onClick={(event) => handleClick(event, row.news_id)}
                             role="checkbox"
                             aria-checked={isItemSelected}
                             tabIndex={-1}
-                            key={row.contact_id}
+                            key={row.news_id}
                             selected={isItemSelected}
                           >
                             <TableCell padding="checkbox" align="center">
@@ -417,17 +291,17 @@ const User: NextPage = () => {
                                 }}
                               />
                             </TableCell>
-                            <TableCell align="center">
-                              {row.created_at}
+                            <TableCell
+                              component="th"
+                              id={labelId}
+                              scope="row"
+                              padding="none"
+                              align="center"
+                            >
+                              {row.post_date}
                             </TableCell>
-                            <TableCell align="center">{row.fullname}</TableCell>
-                            <TableCell align="center">
-                              {row.company_name}
-                            </TableCell>
-                            <TableCell align="center">
-                              {row.phone_number}
-                            </TableCell>
-                            <TableCell align="center">{row.email}</TableCell>
+                            <TableCell align="center">{row.topic}</TableCell>
+                            <TableCell align="center">{row.status}</TableCell>
                             <TableCell align="center">
                               <Stack
                                 direction="row"
@@ -439,16 +313,20 @@ const User: NextPage = () => {
                                   color="primary"
                                   aria-label="edit"
                                   size="large"
-                                  onClick={() => openViewModal(row.contact_id)}
+                                  onClick={() =>
+                                    router.push(
+                                      `/admin/news/edit?id=${row.news_id}`
+                                    )
+                                  }
                                 >
-                                  <VisibilityIcon fontSize="inherit" />
+                                  <EditIcon fontSize="inherit" />
                                 </IconButton>
 
                                 <IconButton
                                   color="error"
                                   aria-label="delete"
                                   size="large"
-                                  onClick={() => Delete(row.contact_id)}
+                                  onClick={() => Delete(row.news_id)}
                                 >
                                   <DeleteIcon fontSize="inherit" />
                                 </IconButton>
@@ -462,7 +340,12 @@ const User: NextPage = () => {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[
+              { label: "10", value: 10 },
+              { label: "20", value: 20 },
+              { label: "30", value: 30 },
+              { label: "All", value: rows.length },
+            ]}
             component="div"
             count={rows.length}
             rowsPerPage={rowsPerPage}
@@ -472,144 +355,13 @@ const User: NextPage = () => {
           />
         </Paper>
       </Box>
-
-      <Modal
-        open={openView}
-        onClose={setClose}
-        disableEnforceFocus={true}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        sx={{ height: "60%" }}
-      >
-        <Box sx={style}>
-          <Box
-            sx={{
-              width: "100%",
-              maxWidth: "100%",
-            }}
-          >
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={12}>
-                <TextField
-                  autoComplete="date"
-                  variant="outlined"
-                  required
-                  fullWidth
-                  inputProps={{ readOnly: true }}
-                  label="Date"
-                  autoFocus
-                  id="date"
-                  name="date"
-                  value={formik.values.created_at}
-                />
-              </Grid>
-              <Grid item xs={12} sm={12}>
-                <TextField
-                  autoComplete="fullname"
-                  variant="outlined"
-                  required
-                  fullWidth
-                  inputProps={{ readOnly: true }}
-                  label="Fullname"
-                  autoFocus
-                  id="fullname"
-                  name="fullname"
-                  value={formik.values.fullname}
-                />
-              </Grid>
-              <Grid item xs={12} sm={12}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  inputProps={{ readOnly: true }}
-                  label="Company Name"
-                  autoComplete="company_name"
-                  id="company_name"
-                  name="company_name"
-                  value={formik.values.company_name}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={12}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  inputProps={{ readOnly: true }}
-                  label="TEL."
-                  autoComplete="phone_number"
-                  id="phone_number"
-                  name="phone_number"
-                  value={formik.values.phone_number}
-                />
-              </Grid>
-              <Grid item xs={12} sm={12}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  inputProps={{ readOnly: true }}
-                  label="E-mail"
-                  autoComplete="email"
-                  id="email"
-                  name="email"
-                  value={formik.values.email}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={12}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  inputProps={{ readOnly: true }}
-                  label="Subject"
-                  autoComplete="subject"
-                  id="subject"
-                  name="subject"
-                  value={formik.values.subject}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={12}>
-                <TextField
-                  variant="outlined"
-                  required
-                  multiline={true}
-                  rows={5}
-                  fullWidth
-                  inputProps={{
-                    readOnly: true,
-                  }}
-                  label="Message"
-                  autoComplete="message"
-                  id="message"
-                  name="message"
-                  value={formik.values.message}
-                />
-              </Grid>
-              <Grid item xs={12} sm={12} mt={4}>
-                <Button
-                  variant="contained"
-                  color="error"
-                  fullWidth
-                  onClick={() => setClose()}
-                >
-                  CLOSE
-                </Button>
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
-      </Modal>
     </Layout>
   );
 };
 
 // export const getStaticProps: any = wrapper.getStaticProps(
 //   (store) => async () => {
-//     const data: any = await store.dispatch(getContact());
+//     const data: any = await store.dispatch(getNewsEN());
 //     console.log(data);
 //     return {
 //       props: {
@@ -619,4 +371,4 @@ const User: NextPage = () => {
 //   }
 // );
 
-export default withAuth(User);
+export default withAuth(News);

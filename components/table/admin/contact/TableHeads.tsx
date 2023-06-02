@@ -27,12 +27,6 @@ export const headCells: readonly HeadCell[] = [
     label: "Date",
   },
   {
-    id: "lang",
-    numeric: false,
-    disablePadding: true,
-    label: "From",
-  },
-  {
     id: "fullname",
     numeric: false,
     disablePadding: true,

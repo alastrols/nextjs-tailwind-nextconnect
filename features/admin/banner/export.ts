@@ -6,7 +6,6 @@ export default async function saveAsExcel({ rows }: any) {
   const wb = new Excel.Workbook();
 
   const ws = wb.addWorksheet();
-  ws.properties.defaultRowHeight = 100;
   ws.columns = [
     { width: 5 },
     { width: 25 },
@@ -14,7 +13,7 @@ export default async function saveAsExcel({ rows }: any) {
     { width: 30 },
     { width: 20 },
   ];
-  const row: any = ws.addRow(["No", "Date", "Topic", "Preview", "Status"]);
+  const row: any = ws.addRow(["No", "Post Date", "Topic", "Preview", "Status"]);
   row.font = {
     bold: true,
   };
@@ -35,6 +34,7 @@ export default async function saveAsExcel({ rows }: any) {
       });
       const no = index + 1;
       content = ws.addRow([no, item.post_date, item.topic, "", item.status]);
+      content.height = 100;
       ws.addImage(imageId, `D${no + 1}:D${no + 1}`);
     })
   );

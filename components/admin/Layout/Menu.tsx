@@ -135,30 +135,18 @@ export default function Menu({ open, onDrawerClose }: MenuProps) {
 
       <List>
         <Link
-          href="#"
+          href="/admin/news"
           style={{ textDecoration: "none", color: "#000000DE" }}
           passHref
         >
           <ListItem
             onClick={() => setNewsOpen(!newsOpen)}
             className={
-              router.pathname === "/admin/news/jp"
+              router.pathname === "/admin/news"
                 ? "Mui-selected"
-                : router.pathname === "/admin/news/jp/edit"
+                : router.pathname === "/admin/news/edit"
                 ? "Mui-selected"
-                : router.pathname === "/admin/news/jp/add"
-                ? "Mui-selected"
-                : router.pathname === "/admin/news/en"
-                ? "Mui-selected"
-                : router.pathname === "/admin/news/en/edit"
-                ? "Mui-selected"
-                : router.pathname === "/admin/news/en/add"
-                ? "Mui-selected"
-                : router.pathname === "/admin/news/th"
-                ? "Mui-selected"
-                : router.pathname === "/admin/news/th/edit"
-                ? "Mui-selected"
-                : router.pathname === "/admin/news/th/add"
+                : router.pathname === "/admin/news/add"
                 ? "Mui-selected"
                 : ""
             }
@@ -168,162 +156,6 @@ export default function Menu({ open, onDrawerClose }: MenuProps) {
             </ListItemIcon>
             <ListItemText primary="News" />
           </ListItem>
-
-          <Collapse
-            key={0}
-            in={
-              router.pathname === "/admin/news/jp"
-                ? true
-                : router.pathname === "/admin/news/jp/edit"
-                ? true
-                : router.pathname === "/admin/news/jp/add"
-                ? true
-                : router.pathname === "/admin/news/en"
-                ? true
-                : router.pathname === "/admin/news/en/edit"
-                ? true
-                : router.pathname === "/admin/news/en/add"
-                ? true
-                : router.pathname === "/admin/news/th"
-                ? true
-                : router.pathname === "/admin/news/th/edit"
-                ? true
-                : router.pathname === "/admin/news/th/add"
-                ? true
-                : newsOpen
-            }
-            timeout="auto"
-            unmountOnExit
-          >
-            <List
-              component="li"
-              disablePadding
-              key={0}
-              style={{ display: "flex", justifyContent: "center" }}
-            >
-              <Link
-                href="/admin/news/jp"
-                style={{
-                  textDecoration:
-                    router.pathname == "/admin/news/jp"
-                      ? ""
-                      : router.pathname == "/admin/news/jp/add"
-                      ? ""
-                      : router.pathname == "/admin/news/jp/edit"
-                      ? ""
-                      : "none",
-                  color: "#000000DE",
-                }}
-                passHref
-              >
-                <ListItem key={0}>
-                  <ListItemIcon>
-                    <NewspaperIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText
-                    key={0}
-                    primary="JP"
-                    style={{
-                      textDecoration:
-                        router.pathname == "/admin/news/jp"
-                          ? "underline"
-                          : router.pathname == "/admin/news/jp/add"
-                          ? "underline"
-                          : router.pathname == "/admin/news/jp/edit"
-                          ? "underline"
-                          : "none",
-                    }}
-                  />
-                </ListItem>
-              </Link>
-            </List>
-
-            <List
-              component="li"
-              disablePadding
-              key={1}
-              style={{ display: "flex", justifyContent: "center" }}
-            >
-              <Link
-                href="/admin/news/en"
-                style={{
-                  textDecoration:
-                    router.pathname == "/admin/news/en"
-                      ? ""
-                      : router.pathname == "/admin/news/en/add"
-                      ? ""
-                      : router.pathname == "/admin/news/en/edit"
-                      ? ""
-                      : "none",
-                  color: "#000000DE",
-                }}
-                passHref
-              >
-                <ListItem key={1}>
-                  <ListItemIcon>
-                    <NewspaperIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText
-                    key={1}
-                    primary="EN"
-                    style={{
-                      textDecoration:
-                        router.pathname == "/admin/news/en"
-                          ? "underline"
-                          : router.pathname == "/admin/news/en/add"
-                          ? "underline"
-                          : router.pathname == "/admin/news/en/edit"
-                          ? "underline"
-                          : "none",
-                    }}
-                  />
-                </ListItem>
-              </Link>
-            </List>
-
-            <List
-              component="li"
-              disablePadding
-              key={2}
-              style={{ display: "flex", justifyContent: "center" }}
-            >
-              <Link
-                href="/admin/news/th"
-                style={{
-                  textDecoration:
-                    router.pathname == "/admin/news/th"
-                      ? ""
-                      : router.pathname == "/admin/news/th/add"
-                      ? ""
-                      : router.pathname == "/admin/news/th/edit"
-                      ? ""
-                      : "none",
-                  color: "#000000DE",
-                }}
-                passHref
-              >
-                <ListItem key={2}>
-                  <ListItemIcon>
-                    <NewspaperIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText
-                    key={2}
-                    primary="TH"
-                    style={{
-                      textDecoration:
-                        router.pathname == "/admin/news/th"
-                          ? "underline"
-                          : router.pathname == "/admin/news/th/add"
-                          ? "underline"
-                          : router.pathname == "/admin/news/th/edit"
-                          ? "underline"
-                          : "none",
-                    }}
-                  />
-                </ListItem>
-              </Link>
-            </List>
-          </Collapse>
         </Link>
       </List>
 

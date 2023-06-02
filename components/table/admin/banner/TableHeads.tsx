@@ -24,7 +24,7 @@ export const headCells: readonly HeadCell[] = [
     id: "post_date",
     numeric: false,
     disablePadding: true,
-    label: "Date",
+    label: "Post Date",
   },
   {
     id: "topic",

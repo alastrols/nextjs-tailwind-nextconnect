@@ -174,6 +174,7 @@ router.post(
       await connection.query(
         `UPDATE users SET status = "Inactive" WHERE user_id IN (${id})`
       );
+      res.status(200).json({ status: "success" });
     });
   }
 );

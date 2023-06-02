@@ -10,18 +10,10 @@ export const getNews = createAsyncThunk(
   async (keyword?: string): Promise<any> => {
     const url = process.env.NEXT_PUBLIC_BASE_URL_API;
     if (keyword) {
-      const response = await axios.get(`${url}/news/get?keyword=${keyword}`, {
-        headers: {
-          "access-token": `Bearer ${getCookie("access-token")}`,
-        },
-      });
+      const response = await axios.get(`${url}/news/get?keyword=${keyword}`);
       return response.data.data;
     } else {
-      const response = await axios.get(`${url}/news/select`, {
-        headers: {
-          "access-token": `Bearer ${getCookie("access-token")}`,
-        },
-      });
+      const response = await axios.get(`${url}/news/lists`);
       return response.data.data;
     }
   }
@@ -31,48 +23,31 @@ export const getNewsById = createAsyncThunk(
   async (id?: number): Promise<any> => {
     const url = process.env.NEXT_PUBLIC_BASE_URL_API;
     if (id) {
-      const response = await axios.get(`${url}/news/getbyid?id=${id}`, {
-        headers: {
-          "access-token": `Bearer ${getCookie("access-token")}`,
-        },
-      });
+      const response = await axios.get(`${url}/news/getbyid?id=${id}`);
       return response.data.data;
     }
   }
 );
 export const addNews = createAsyncThunk("news/add", async (data: FormData) => {
   const url = process.env.NEXT_PUBLIC_BASE_URL_API;
-  const response = await axios.post(`${url}/news/add`, data, {
-    headers: {
-      "access-token": `Bearer ${getCookie("access-token")}`,
-    },
-  });
+  const response = await axios.post(`${url}/news/add`, data);
   return response;
 });
 
-export const deleteNews = createAsyncThunk("news/delete", async (id?: any) => {
-  const url = process.env.NEXT_PUBLIC_BASE_URL_API;
-  await axios.delete(`${url}/news/delete?id=${id}`, {
-    headers: {
-      "access-token": `Bearer ${getCookie("access-token")}`,
-    },
-  });
-
-  return { status: "success" };
-});
+export const deleteNews = createAsyncThunk(
+  "news/delete",
+  async (data: FormData) => {
+    const url = process.env.NEXT_PUBLIC_BASE_URL_API;
+    await axios.post(`${url}/news/delete`, data);
+    return { status: "success" };
+  }
+);
 
 export const deleteAllNews = createAsyncThunk(
   "news/alldelete",
   async (id?: any) => {
     const url = process.env.NEXT_PUBLIC_BASE_URL_API;
-    id.forEach(async (id: number) => {
-      await axios.delete(`${url}/news/delete?id=${id}`, {
-        headers: {
-          "access-token": `Bearer ${getCookie("access-token")}`,
-        },
-      });
-    });
-
+    await axios.post(`${url}/news/deleteall`, { news_id: id });
     return { status: "success" };
   }
 );

@@ -15,24 +15,17 @@ export default async function saveAsExcel({ rows }: any) {
     { width: 20 },
     { width: 20 },
     { width: 20 },
-    { width: 20 },
-    { width: 20 },
-    { width: 50 },
     { width: 50 },
   ];
   const row: any = ws.addRow([
     "No",
     "Date",
-    "From",
     "Fullname",
     "Company",
-    "Department",
     "TEL.",
-    "Fax",
     "E-mail",
     "Subject",
-    "Detail",
-    "Attached File",
+    "Message",
   ]);
   row.font = {
     bold: true,
@@ -46,29 +39,25 @@ export default async function saveAsExcel({ rows }: any) {
       content = ws.addRow([
         no,
         item.created_at,
-        item.lang,
         item.fullname,
         item.company_name,
-        item.department,
         item.phone_number,
-        item.fax,
         item.email,
         item.subject,
-        item.detail,
-        item.file,
+        item.message,
       ]);
 
-      if(item.file != ""){
-        ws.getCell("L" + link_row).value = {
-          text: "Download",
-          hyperlink: item.file,
-        };
-        ws.getCell("L" + link_row).font = {
-          color: { argb: "004e47cc" },
-          underline: true,
-        };
-      }
-      
+      // if (item.file != "") {
+      //   ws.getCell("L" + link_row).value = {
+      //     text: "Download",
+      //     hyperlink: item.file,
+      //   };
+      //   ws.getCell("L" + link_row).font = {
+      //     color: { argb: "004e47cc" },
+      //     underline: true,
+      //   };
+      // }
+
       content.height = 20;
     })
   );
