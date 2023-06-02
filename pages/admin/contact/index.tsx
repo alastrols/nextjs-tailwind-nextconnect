@@ -93,7 +93,7 @@ const User: NextPage = () => {
 
   // *************************** Use Effect ***************************
   React.useEffect(() => {
-    dispatch(getContact());
+    dispatch(getContact(""));
   }, [dispatch]);
 
   React.useEffect(() => {
@@ -119,7 +119,7 @@ const User: NextPage = () => {
         Swal.fire("Deleted!", "Your data has been deleted.", "success").then(
           function () {
             dispatch(deleteContact(data)).then((result: any) => {
-              dispatch(getContact());
+              dispatch(getContact(""));
             });
           }
         );
@@ -141,7 +141,7 @@ const User: NextPage = () => {
         Swal.fire("Deleted!", "Your data has been deleted.", "success").then(
           function () {
             dispatch(deleteAllContact(id)).then((result: any) => {
-              dispatch(getContact());
+              dispatch(getContact(""));
             });
           }
         );

@@ -28,15 +28,15 @@ interface Decoded {
   email?: string;
 }
 
-interface UserData {
-  user_id?: string;
-  username?: string;
-  password?: string;
-  fullname?: string;
-  email?: string;
-  level?: string;
-}
-interface Users extends Array<UserData> {}
+// interface UserData {
+//   user_id?: string;
+//   username?: string;
+//   password?: string;
+//   fullname?: string;
+//   email?: string;
+//   level?: string;
+// }
+// interface Users extends Array<UserData> {}
 
 import { createRouter } from "next-connect";
 const router = createRouter<NextApiRequest, NextApiResponse>();
@@ -57,7 +57,7 @@ router.post(
     const form = formidable();
     form.parse(req, async (err, fields, files) => {
       const { username, password }: Login = fields;
-      const [user]: Users[] = await connection.query(
+      const [user]: any = await connection.query(
         `SELECT user_id, username, password, fullname, email, level 
         FROM users 
         WHERE username = '${username}' AND status = 'active' AND level = 'Administrator' `

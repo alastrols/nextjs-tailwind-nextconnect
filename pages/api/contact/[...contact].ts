@@ -20,17 +20,17 @@ declare module "next" {
   }
 }
 
-interface Data {
-  contact_id?: string;
-  fullname?: string;
-  email?: string;
-  company_name?: string;
-  phone_number?: string;
-  message?: string;
-  subject?: string;
-  created_at?: string;
-}
-interface Contact extends Array<Data> {}
+// interface Data {
+//   contact_id?: string;
+//   fullname?: string;
+//   email?: string;
+//   company_name?: string;
+//   phone_number?: string;
+//   message?: string;
+//   subject?: string;
+//   created_at?: string;
+// }
+// interface Contact extends Array<Data> {}
 
 // Middleware
 router.use(async (req: NextApiRequest, res: NextApiResponse, next) => {
@@ -43,7 +43,7 @@ router.get(
   "/api/contact/lists",
   async (req: NextApiRequest, res: NextApiResponse, next: any) => {
     try {
-      const [response]: Contact[] = await connection.query(
+      const [response]: any = await connection.query(
         `SELECT contact_id, fullname, company_name, phone_number, email, message, created_at, subject FROM contact 
          ORDER BY created_at DESC`
       );
@@ -59,7 +59,7 @@ router.get(
   async (req: NextApiRequest, res: NextApiResponse, next: any) => {
     const { keyword } = req.query;
     try {
-      const [response]: Contact[] = await connection.query(
+      const [response]: any = await connection.query(
         `SELECT contact_id, fullname, company_name, phone_number, email, message, created_at, subject FROM contact 
          WHERE fullname LIKE ? OR company_name LIKE ? OR phone_number LIKE ? OR email LIKE ? OR subject LIKE ? OR created_at LIKE ? ORDER BY created_at DESC`,
         [
@@ -83,7 +83,7 @@ router.get(
   async (req: NextApiRequest, res: NextApiResponse, next: any) => {
     const { id } = req.query;
     try {
-      const [response]: Contact[] = await connection.query(
+      const [response]: any = await connection.query(
         `SELECT contact_id, fullname, company_name, phone_number, email, message, created_at, subject
          FROM contact WHERE contact_id = ?`,
         [id]

@@ -39,7 +39,7 @@ router.get(
   "/api/news/lists",
   async (req: NextApiRequest, res: NextApiResponse, next: any) => {
     try {
-      const [response]: News[] = await connection.query(
+      const [response]: any = await connection.query(
         `SELECT news_id, post_date, topic, status FROM news ORDER BY post_date DESC, created_at DESC`
       );
       res.status(200).json({ status: "success", data: response });
@@ -54,7 +54,7 @@ router.get(
   async (req: NextApiRequest, res: NextApiResponse, next: any) => {
     const { keyword } = req.query;
     try {
-      const [response]: News[] = await connection.query(
+      const [response]: any = await connection.query(
         `SELECT news_id, post_date, topic, status FROM news 
          WHERE post_date LIKE ? OR topic LIKE ? OR status LIKE ? ORDER BY post_date DESC, created_at DESC`,
         ["%" + keyword + "%", "%" + keyword + "%", "%" + keyword + "%"]
@@ -71,7 +71,7 @@ router.get(
   async (req: NextApiRequest, res: NextApiResponse, next: any) => {
     const { id } = req.query;
     try {
-      const [response]: News[] = await connection.query(
+      const [response]: any = await connection.query(
         `SELECT news_id, post_date, topic, status, detail FROM news WHERE news_id = ?`,
         [id]
       );

@@ -53,7 +53,7 @@ const Banner: NextPage = () => {
 
   // *************************** Use Effect ***************************
   React.useEffect(() => {
-    dispatch(getBanner());
+    dispatch(getBanner(""));
   }, [dispatch]);
 
   React.useEffect(() => {
@@ -103,7 +103,7 @@ const Banner: NextPage = () => {
         Swal.fire("Deleted!", "Your data has been deleted.", "success").then(
           function () {
             dispatch(deleteBanner(data)).then((result: any) => {
-              dispatch(getBanner());
+              dispatch(getBanner(""));
             });
           }
         );
@@ -125,7 +125,7 @@ const Banner: NextPage = () => {
         Swal.fire("Deleted!", "Your data has been deleted.", "success").then(
           function () {
             dispatch(deleteAllBanner(id)).then((result: any) => {
-              dispatch(getBanner());
+              dispatch(getBanner(""));
             });
           }
         );

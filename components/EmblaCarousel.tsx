@@ -1,15 +1,16 @@
-import React from 'react'
-import useEmblaCarousel, { EmblaOptionsType } from 'embla-carousel-react'
-import imagebyBanner from '../pages/ImagebyBanner'
+import React from "react";
+import useEmblaCarousel, { EmblaOptionsType } from "embla-carousel-react";
+import imagebyBanner from "../pages/ImagebyBanner";
+import Image from "next/image";
 
 type PropType = {
-  slides: number[]
-  options?: EmblaOptionsType
-}
+  slides: number[];
+  options?: EmblaOptionsType;
+};
 
 const EmblaCarousel: React.FC<PropType> = (props) => {
-  const { slides, options } = props
-  const [emblaRef] = useEmblaCarousel(options)
+  const { slides, options } = props;
+  const [emblaRef] = useEmblaCarousel(options);
 
   return (
     <div className="embla">
@@ -20,7 +21,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
               <div className="embla__slide__number">
                 <span>{index + 1}</span>
               </div>
-              <img
+              <Image
                 className="embla__slide__img"
                 src={imagebyBanner(index)}
                 alt="Your alt text"
@@ -30,7 +31,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default EmblaCarousel
+export default EmblaCarousel;

@@ -46,7 +46,7 @@ const User: NextPage = () => {
 
   // *************************** Use Effect ***************************
   React.useEffect(() => {
-    dispatch(getUser());
+    dispatch(getUser(""));
   }, [dispatch]);
 
   React.useEffect(() => {
@@ -72,7 +72,7 @@ const User: NextPage = () => {
         Swal.fire("Deleted!", "Your data has been deleted.", "success").then(
           function () {
             dispatch(deleteUser(data)).then((result: any) => {
-              dispatch(getUser());
+              dispatch(getUser(""));
             });
           }
         );
@@ -95,7 +95,7 @@ const User: NextPage = () => {
           function () {
             dispatch(deleteAllUser(id)).then((result: any) => {
               if (result.payload.status == "success") {
-                dispatch(getUser());
+                dispatch(getUser(""));
               }
             });
           }

@@ -52,6 +52,10 @@ module.exports = {
             key: "Access-Control-Allow-Methods",
             value: "PUT, POST, PATCH, DELETE, GET",
           },
+          {
+            key: "Cache-Control",
+            value: "no-store",
+          },
         ],
       },
     ];

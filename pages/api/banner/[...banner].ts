@@ -10,7 +10,6 @@ export const config = {
     bodyParser: false,
   },
 };
-
 import { createRouter } from "next-connect";
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
@@ -19,14 +18,14 @@ declare module "next" {
     decoded: any;
   }
 }
-interface Data {
-  banner_id?: string;
-  post_date?: string;
-  topic?: string;
-  filename?: string;
-  status?: string;
-}
-interface Banner extends Array<Data> {}
+// interface Data {
+//   banner_id?: string;
+//   post_date?: string;
+//   topic?: string;
+//   filename?: string;
+//   status?: string;
+// }
+// interface Banner extends Array<Data> {}
 // Middleware
 router.use(async (req: NextApiRequest, res: NextApiResponse, next) => {
   const decoded = await adminAuth(req, res);
@@ -38,7 +37,7 @@ router.get(
   "/api/banner/lists",
   async (req: NextApiRequest, res: NextApiResponse, next: any) => {
     try {
-      const [response]: Banner[] = await connection.query(
+      const [response] = await connection.query(
         `SELECT banner_id, post_date, topic, filename, status FROM banner WHERE active = "Yes" ORDER BY arr ASC`
       );
       res.status(200).json({ status: "success", data: response });
@@ -53,7 +52,7 @@ router.get(
   async (req: NextApiRequest, res: NextApiResponse, next: any) => {
     const { keyword } = req.query;
     try {
-      const [response]: Banner[] = await connection.query(
+      const [response] = await connection.query(
         `SELECT banner_id, post_date, topic, filename, status FROM banner WHERE active = "Yes"  AND (post_date LIKE ? OR topic LIKE ? ) ORDER BY arr ASC`,
         ["%" + keyword + "%", "%" + keyword + "%"]
       );
@@ -69,7 +68,7 @@ router.get(
   async (req: NextApiRequest, res: NextApiResponse, next: any) => {
     const { id } = req.query;
     try {
-      const [response]: Banner[] = await connection.query(
+      const [response] = await connection.query(
         `SELECT banner_id, post_date, topic, filename, status FROM banner WHERE active = "Yes" AND banner_id = ?`,
         [id]
       );
@@ -90,7 +89,7 @@ router.put(
         Math.random().toString(16).slice(2) + "_" + files.file.originalFilename;
       fs.copyFileSync(files.file.filepath, `public/upload/banner/${name}`);
       let arr = 0;
-      const [check] = await connection.query(
+      const [check]: any = await connection.query(
         "SELECT MAX(arr) as arr FROM banner"
       );
       if (check[0].arr != null) {

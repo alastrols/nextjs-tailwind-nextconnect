@@ -40,7 +40,7 @@ router.get(
   "/api/users/lists",
   async (req: NextApiRequest, res: NextApiResponse, next: any) => {
     try {
-      const [response]: Users[] = await connection.query(
+      const [response]: any = await connection.query(
         `SELECT user_id, fullname, email, username, level FROM users WHERE (status = "Active" AND username != "admin")  ORDER BY fullname ASC, created_at DESC`
       );
       res.status(200).json({ status: "success", data: response });
@@ -56,7 +56,7 @@ router.get(
     const { keyword } = req.query;
     try {
       console.log(keyword);
-      const [response]: Users[] = await connection.query(
+      const [response]: any = await connection.query(
         `SELECT user_id, fullname, email, username, level FROM users WHERE (status = "Active" AND username != "admin")  AND (fullname LIKE ? OR email LIKE ? OR username LIKE ? OR level LIKE ?) ORDER BY fullname ASC, created_at DESC`,
         [
           "%" + keyword + "%",
@@ -77,7 +77,7 @@ router.get(
   async (req: NextApiRequest, res: NextApiResponse, next: any) => {
     const { id } = req.query;
     try {
-      const [response]: Users[] = await connection.query(
+      const [response]: any = await connection.query(
         `SELECT user_id, fullname, email, username, level FROM users WHERE status = "Active" AND username != "admin" AND user_id = ?`,
         [id]
       );
@@ -95,7 +95,7 @@ router.put(
     form.parse(req, async (err, fields, files) => {
       const { username, password, fullname, email, level } = fields;
       await connection.query("ALTER TABLE users AUTO_INCREMENT = 1");
-      const [check] = await connection.query(
+      const [check]: any = await connection.query(
         "SELECT * FROM users WHERE username = ? AND status = ? ",
         [username, "active"]
       );
@@ -122,7 +122,7 @@ router.post(
     const form = formidable();
     form.parse(req, async (err, fields, files) => {
       const { user_id, username, password, fullname, email, level } = fields;
-      const [check] = await connection.query(
+      const [check]: any = await connection.query(
         "SELECT user_id FROM users WHERE status = 'active' AND user_id != ? AND username = ?",
         [user_id, username]
       );
@@ -215,7 +215,7 @@ async function importExcelUser(url: string) {
       const email = rows["Email"];
       const username = rows["Username"];
       const pass = rows["Password"];
-      const [check] = await connection.query(
+      const [check]: any = await connection.query(
         "SELECT user_id FROM users WHERE status = 'active' AND username = ? ",
         [username]
       );

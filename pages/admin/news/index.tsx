@@ -48,7 +48,7 @@ const News: NextPage = () => {
   };
   // *************************** Use Effect ***************************
   React.useEffect(() => {
-    dispatch(getNews());
+    dispatch(getNews(""));
   }, [dispatch]);
 
   React.useEffect(() => {
@@ -74,7 +74,7 @@ const News: NextPage = () => {
         Swal.fire("Deleted!", "Your data has been deleted.", "success").then(
           function () {
             dispatch(deleteNews(data)).then((result: any) => {
-              dispatch(getNews());
+              dispatch(getNews(""));
             });
           }
         );
@@ -96,7 +96,7 @@ const News: NextPage = () => {
         Swal.fire("Deleted!", "Your data has been deleted.", "success").then(
           function () {
             dispatch(deleteAllNews(id)).then((result: any) => {
-              dispatch(getNews());
+              dispatch(getNews(""));
             });
           }
         );
