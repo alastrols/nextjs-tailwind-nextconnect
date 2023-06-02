@@ -12,7 +12,6 @@ export default async function saveAsExcel({ rows }: any) {
     { width: 20 },
     { width: 20 },
     { width: 20 },
-    { width: 20 },
   ];
   const row: any = ws.addRow([
     "No",
@@ -35,7 +34,6 @@ export default async function saveAsExcel({ rows }: any) {
         item.fullname,
         item.username,
         item.email,
-        item.status,
         item.level,
       ]);
       content.height = 20;
@@ -46,5 +44,5 @@ export default async function saveAsExcel({ rows }: any) {
     row.alignment = { vertical: "middle", horizontal: "center" };
   });
   const buf = await wb.xlsx.writeBuffer();
-  await saveAs(new Blob([buf]), "user.xlsx");
+  await saveAs(new Blob([buf]), "users.xlsx");
 }

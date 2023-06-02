@@ -67,9 +67,11 @@ const User: NextPage = () => {
     }).then((result: any) => {
       setSelected([]);
       if (result.isConfirmed) {
+        let data = new FormData();
+        data.append("user_id", id);
         Swal.fire("Deleted!", "Your data has been deleted.", "success").then(
           function () {
-            dispatch(deleteUser(id)).then((result: any) => {
+            dispatch(deleteUser(data)).then((result: any) => {
               dispatch(getUser());
             });
           }
@@ -105,51 +107,6 @@ const User: NextPage = () => {
   const exports = () => {
     saveAsExcel({ rows });
   };
-  // const saveAsExcel = async () => {
-  //   const wb = new Excel.Workbook();
-
-  //   const ws = wb.addWorksheet();
-
-  //   ws.columns = [
-  //     { width: 5 },
-  //     { width: 25 },
-  //     { width: 20 },
-  //     { width: 20 },
-  //     { width: 20 },
-  //     { width: 20 },
-  //   ];
-  //   const row: any = ws.addRow([
-  //     "No",
-  //     "Fullname",
-  //     "Username",
-  //     "Email",
-  //     "Department Name",
-  //     "CreatedAt",
-  //   ]);
-  //   row.font = {
-  //     bold: true,
-  //   };
-  //   await Promise.all(
-  //     rows.map(async (item: any, index: any): Promise<any> => {
-  //       const no = index + 1;
-  //       const content: any = ws.addRow([
-  //         no,
-  //         item.fullname,
-  //         item.username,
-  //         item.email,
-  //         item.dept_name,
-  //         item.created_at,
-  //       ]);
-  //       content.height = 20;
-  //     })
-  //   );
-  //   ws.eachRow(function (row) {
-  //     row.alignment = { vertical: "middle", horizontal: "center" };
-  //   });
-  //   const buf = await wb.xlsx.writeBuffer();
-  //   await saveAs(new Blob([buf]), "user.xlsx");
-  // };
-
   // *************************** Action ***************************
 
   // *************************** Fix Table ***************************
@@ -393,7 +350,12 @@ const User: NextPage = () => {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[
+              { label: "10", value: 10 },
+              { label: "20", value: 20 },
+              { label: "30", value: 30 },
+              { label: "All", value: rows.length },
+            ]}
             component="div"
             count={rows.length}
             rowsPerPage={rowsPerPage}

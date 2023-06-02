@@ -164,7 +164,7 @@ function Edit() {
                     value={level}
                     fullWidth
                   >
-                    {/* <MenuItem value="Normal User">Normal User</MenuItem> */}
+                    <MenuItem value="User">User</MenuItem>
                     <MenuItem value="Administrator">Administrator</MenuItem>
                   </Select>
                 </FormControl>
@@ -219,7 +219,6 @@ function Edit() {
             initialValues={initialValues}
             onSubmit={async (values, { setSubmitting }) => {
               let data = new FormData();
-              console.log("asd");
               data.append("username", String(username));
               data.append("fullname", String(fullname));
               data.append("password", String(password));
@@ -239,11 +238,13 @@ function Edit() {
                     router.push("/admin/user");
                   });
                 } else {
-                  Swal.fire("Error!", "Please check your input", "error").then(
-                    function () {
-                      return false;
-                    }
-                  );
+                  Swal.fire(
+                    "Error!",
+                    result.payload.data.message,
+                    "error"
+                  ).then(function () {
+                    return false;
+                  });
                 }
               });
 

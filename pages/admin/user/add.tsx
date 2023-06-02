@@ -169,7 +169,6 @@ function Add() {
             initialValues={initialValues}
             onSubmit={async (values, { setSubmitting }) => {
               let data = new FormData();
-
               data.append("username", values.username);
               data.append("password", values.password);
               data.append("fullname", values.fullname);

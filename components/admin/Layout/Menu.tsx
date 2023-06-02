@@ -109,30 +109,18 @@ export default function Menu({ open, onDrawerClose }: MenuProps) {
 
       <List>
         <Link
-          href="#"
+          href="/admin/banner"
           style={{ textDecoration: "none", color: "#000000DE" }}
           passHref
         >
           <ListItem
             onClick={() => setBannerOpen(!bannerOpen)}
             className={
-              router.pathname === "/admin/banner/jp"
+              router.pathname === "/admin/banner"
                 ? "Mui-selected"
-                : router.pathname === "/admin/banner/jp/edit"
+                : router.pathname === "/admin/banner/edit"
                 ? "Mui-selected"
-                : router.pathname === "/admin/banner/jp/add"
-                ? "Mui-selected"
-                : router.pathname === "/admin/banner/en"
-                ? "Mui-selected"
-                : router.pathname === "/admin/banner/en/edit"
-                ? "Mui-selected"
-                : router.pathname === "/admin/banner/en/add"
-                ? "Mui-selected"
-                : router.pathname === "/admin/banner/th"
-                ? "Mui-selected"
-                : router.pathname === "/admin/banner/th/edit"
-                ? "Mui-selected"
-                : router.pathname === "/admin/banner/th/add"
+                : router.pathname === "/admin/banner/add"
                 ? "Mui-selected"
                 : ""
             }
@@ -142,162 +130,6 @@ export default function Menu({ open, onDrawerClose }: MenuProps) {
             </ListItemIcon>
             <ListItemText primary="Banner" />
           </ListItem>
-
-          <Collapse
-            key={0}
-            in={
-              router.pathname === "/admin/banner/jp"
-                ? true
-                : router.pathname === "/admin/banner/jp/edit"
-                ? true
-                : router.pathname === "/admin/banner/jp/add"
-                ? true
-                : router.pathname === "/admin/banner/en"
-                ? true
-                : router.pathname === "/admin/banner/en/edit"
-                ? true
-                : router.pathname === "/admin/banner/en/add"
-                ? true
-                : router.pathname === "/admin/banner/th"
-                ? true
-                : router.pathname === "/admin/banner/th/edit"
-                ? true
-                : router.pathname === "/admin/banner/th/add"
-                ? true
-                : bannerOpen
-            }
-            timeout="auto"
-            unmountOnExit
-          >
-            <List
-              component="li"
-              disablePadding
-              key={0}
-              style={{ display: "flex", justifyContent: "center" }}
-            >
-              <Link
-                href="/admin/banner/jp"
-                style={{
-                  textDecoration:
-                    router.pathname == "/admin/banner/jp"
-                      ? ""
-                      : router.pathname == "/admin/banner/jp/add"
-                      ? ""
-                      : router.pathname == "/admin/banner/jp/edit"
-                      ? ""
-                      : "none",
-                  color: "#000000DE",
-                }}
-                passHref
-              >
-                <ListItem key={0}>
-                  <ListItemIcon>
-                    <PhotoSizeSelectActualIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText
-                    key={0}
-                    primary="JP"
-                    style={{
-                      textDecoration:
-                        router.pathname == "/admin/banner/jp"
-                          ? "underline"
-                          : router.pathname == "/admin/banner/jp/add"
-                          ? "underline"
-                          : router.pathname == "/admin/banner/jp/edit"
-                          ? "underline"
-                          : "none",
-                    }}
-                  />
-                </ListItem>
-              </Link>
-            </List>
-
-            <List
-              component="li"
-              disablePadding
-              key={1}
-              style={{ display: "flex", justifyContent: "center" }}
-            >
-              <Link
-                href="/admin/banner/en"
-                style={{
-                  textDecoration:
-                    router.pathname == "/admin/banner/en"
-                      ? ""
-                      : router.pathname == "/admin/banner/en/add"
-                      ? ""
-                      : router.pathname == "/admin/banner/en/edit"
-                      ? ""
-                      : "none",
-                  color: "#000000DE",
-                }}
-                passHref
-              >
-                <ListItem key={1}>
-                  <ListItemIcon>
-                    <PhotoSizeSelectActualIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText
-                    key={1}
-                    primary="EN"
-                    style={{
-                      textDecoration:
-                        router.pathname == "/admin/banner/en"
-                          ? "underline"
-                          : router.pathname == "/admin/banner/en/add"
-                          ? "underline"
-                          : router.pathname == "/admin/banner/en/edit"
-                          ? "underline"
-                          : "none",
-                    }}
-                  />
-                </ListItem>
-              </Link>
-            </List>
-
-            <List
-              component="li"
-              disablePadding
-              key={2}
-              style={{ display: "flex", justifyContent: "center" }}
-            >
-              <Link
-                href="/admin/banner/th"
-                style={{
-                  textDecoration:
-                    router.pathname == "/admin/banner/th"
-                      ? ""
-                      : router.pathname == "/admin/banner/th/add"
-                      ? ""
-                      : router.pathname == "/admin/banner/th/edit"
-                      ? ""
-                      : "none",
-                  color: "#000000DE",
-                }}
-                passHref
-              >
-                <ListItem key={2}>
-                  <ListItemIcon>
-                    <PhotoSizeSelectActualIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText
-                    key={2}
-                    primary="TH"
-                    style={{
-                      textDecoration:
-                        router.pathname == "/admin/banner/th"
-                          ? "underline"
-                          : router.pathname == "/admin/banner/th/add"
-                          ? "underline"
-                          : router.pathname == "/admin/banner/th/edit"
-                          ? "underline"
-                          : "none",
-                    }}
-                  />
-                </ListItem>
-              </Link>
-            </List>
-          </Collapse>
         </Link>
       </List>
 

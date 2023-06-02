@@ -106,7 +106,7 @@ const showFormExcel = ({ values, setFieldValue }: FormikProps<any>) => {
                       >
                         File Format:{" "}
                         <a
-                          href={`${process.env.NEXT_PUBLIC_BASE_URL}upload/format/user/Upload_userlist.xlsx`}
+                          href={`/format/user/Upload_userlist.xlsx`}
                           style={{
                             marginLeft: "10px",
                             color: "blue",
@@ -203,9 +203,9 @@ function Upload() {
                   .then(async (blob) => {
                     var formData = new FormData();
                     formData.append("file", blob, filename);
-                    var urlupload = process.env.NEXT_PUBLIC_BASE_URL_ADMIN_API;
+                    var urlupload = process.env.NEXT_PUBLIC_BASE_URL_API;
                     const response: any = await axios.post(
-                      `${urlupload}/user/upload`,
+                      `${urlupload}/users/upload`,
                       formData
                     );
                     if (response.data.status == "success") {

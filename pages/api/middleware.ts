@@ -8,11 +8,12 @@ export async function adminAuth(req: NextApiRequest, res: NextApiResponse) {
     const accessToken = getCookies({ req, res })[
       `${process.env.ACCESS_TOKEN_KEY}`
     ];
-    const decoded = await verifyToken(accessToken);
+    let decoded = await verifyToken(accessToken);
     if (decoded == "error") {
       res.json({ status: "error", message: "Invalid Token" });
       return;
     }
+    decoded.token = `Bearer ${accessToken}`;
     resolve(decoded);
   });
 }

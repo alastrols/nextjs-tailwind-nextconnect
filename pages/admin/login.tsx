@@ -56,11 +56,9 @@ const Login = ({}: Props) => {
           rawResponse.json().then((data) => {
             if (data.status == "success") {
               Swal.fire("Success!", "", "success").then(function () {
-                location.reload();
+                location.href = "/admin/banner";
               });
               return false;
-            } else {
-              console.log(data);
             }
           });
         })
