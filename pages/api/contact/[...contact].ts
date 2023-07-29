@@ -63,12 +63,12 @@ router.get(
         `SELECT contact_id, fullname, company_name, phone_number, email, message, created_at, subject FROM contact 
          WHERE fullname LIKE ? OR company_name LIKE ? OR phone_number LIKE ? OR email LIKE ? OR subject LIKE ? OR created_at LIKE ? ORDER BY created_at DESC`,
         [
-          "%" + keyword + "%",
-          "%" + keyword + "%",
-          "%" + keyword + "%",
-          "%" + keyword + "%",
-          "%" + keyword + "%",
-          "%" + keyword + "%",
+          "%" + keyword?.toString() + "%",
+          "%" + keyword?.toString() + "%",
+          "%" + keyword?.toString() + "%",
+          "%" + keyword?.toString() + "%",
+          "%" + keyword?.toString() + "%",
+          "%" + keyword?.toString() + "%",
         ]
       );
       res.status(200).json({ status: "success", data: response });
@@ -86,7 +86,7 @@ router.get(
       const [response]: any = await connection.query(
         `SELECT contact_id, fullname, company_name, phone_number, email, message, created_at, subject
          FROM contact WHERE contact_id = ?`,
-        [id]
+        [id?.toString()]
       );
       res.status(200).json({ status: "success", data: response });
     } catch {
@@ -102,7 +102,7 @@ router.post(
     form.parse(req, async (err, fields, files) => {
       const { contact_id } = fields;
       await connection.query(
-        `DELETE FROM contact WHERE contact_id = ${contact_id}`
+        `DELETE FROM contact WHERE contact_id = ${contact_id.toString()}`
       );
       res.status(200).json({ status: "success" });
     });

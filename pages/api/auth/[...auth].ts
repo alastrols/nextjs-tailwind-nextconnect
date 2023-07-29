@@ -39,6 +39,7 @@ interface Decoded {
 // interface Users extends Array<UserData> {}
 
 import { createRouter } from "next-connect";
+import { json } from "stream/consumers";
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
 // Middleware
@@ -58,12 +59,15 @@ router.post(
     form.parse(req, async (err, fields, files) => {
       const { username, password }: Login = fields;
       const [user]: any = await connection.query(
-        `SELECT user_id, username, password, fullname, email, level 
-        FROM users 
-        WHERE username = '${username}' AND status = 'active' AND level = 'Administrator' `
+        `SELECT user_id, username, password, fullname, email, level
+        FROM users
+        WHERE username = '${username?.toString()}' AND status = 'active' AND level = 'Administrator' `
       );
       if (user.length > 0) {
-        var passwordIsValid = bcrypt.compareSync(password, user[0].password);
+        var passwordIsValid = bcrypt.compareSync(
+          password?.toString(),
+          user[0].password
+        );
         if (passwordIsValid) {
           var token = getToken({
             user_id: user[0].user_id,

@@ -1,4 +1,4 @@
-Next.js + DaisyUI (Tailwind CSS) + MySQL + Next-Connect
+Next.js + MySQL + Next-Connect
 
 ```bash
 yarn install

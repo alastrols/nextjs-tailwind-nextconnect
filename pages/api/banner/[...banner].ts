@@ -86,8 +86,10 @@ router.put(
     form.parse(req, async (err, fields, files: any) => {
       const { topic, post_date, status, filename } = fields;
       const name =
-        Math.random().toString(16).slice(2) + "_" + files.file.originalFilename;
-      fs.copyFileSync(files.file.filepath, `public/upload/banner/${name}`);
+        Math.random().toString(16).slice(2) +
+        "_" +
+        files.file[0].originalFilename;
+      fs.copyFileSync(files.file[0].filepath, `public/upload/banner/${name}`);
       let arr = 0;
       const [check]: any = await connection.query(
         "SELECT MAX(arr) as arr FROM banner"
@@ -97,7 +99,13 @@ router.put(
       }
       await connection.query(
         "INSERT INTO banner (topic , post_date ,  status , filename, arr) VALUES (? , ? , ? , ?, ?)",
-        [topic, post_date, status, name, arr]
+        [
+          topic.toString(),
+          post_date.toString(),
+          status.toString(),
+          name.toString(),
+          arr,
+        ]
       );
       res.status(200).json({ status: "success" });
     });
@@ -126,15 +134,22 @@ router.post(
     form.parse(req, async (err, fields, files: any) => {
       const { banner_id, post_date, topic, status } = fields;
       const name =
-        Math.random().toString(16).slice(2) + "_" + files.file.originalFilename;
-      fs.copyFileSync(files.file.filepath, `public/upload/banner/${name}`);
+        Math.random().toString(16).slice(2) +
+        "_" +
+        files.file[0].originalFilename;
+      fs.copyFileSync(files.file[0].filepath, `public/upload/banner/${name}`);
       await connection.query(
         "UPDATE banner SET filename = ? WHERE banner_id = ?",
-        [name, banner_id]
+        [name.toString(), banner_id.toString()]
       );
       await connection.query(
         "UPDATE banner SET post_date = ?, topic = ?, status = ? WHERE banner_id = ?",
-        [post_date, topic, status, banner_id]
+        [
+          post_date.toString(),
+          topic.toString(),
+          status.toString(),
+          banner_id.toString(),
+        ]
       );
       res.status(200).json({ status: "success" });
     });
@@ -148,7 +163,7 @@ router.post(
     form.parse(req, async (err, fields, files) => {
       const { banner_id } = fields;
       await connection.query(
-        `UPDATE banner SET active = "No" WHERE banner_id = ${banner_id}`
+        `UPDATE banner SET active = "No" WHERE banner_id = ${banner_id.toString()}`
       );
       res.status(200).json({ status: "success" });
     });

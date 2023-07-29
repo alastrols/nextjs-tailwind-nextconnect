@@ -73,7 +73,7 @@ router.get(
     try {
       const [response]: any = await connection.query(
         `SELECT news_id, post_date, topic, status, detail FROM news WHERE news_id = ?`,
-        [id]
+        [id?.toString()]
       );
       res.status(200).json({ status: "success", data: response });
     } catch {
@@ -91,7 +91,12 @@ router.put(
       await connection.query(
         `INSERT INTO news (post_date, topic, status, detail) 
          VALUES (?, ?, ?, ?)`,
-        [post_date, topic, status, detail]
+        [
+          post_date?.toString(),
+          topic?.toString(),
+          status?.toString(),
+          detail?.toString(),
+        ]
       );
       res.status(200).json({ status: "success" });
     });
@@ -106,7 +111,13 @@ router.post(
       const { news_id, post_date, topic, status, detail } = fields;
       await connection.query(
         `UPDATE news SET post_date = ?, topic = ?, status = ?, detail = ? WHERE news_id = ?`,
-        [post_date, topic, status, detail, news_id]
+        [
+          post_date?.toString(),
+          topic?.toString(),
+          status?.toString(),
+          detail?.toString(),
+          news_id?.toString(),
+        ]
       );
       res.status(200).json({ status: "success" });
     });
@@ -119,7 +130,9 @@ router.post(
     const form = formidable();
     form.parse(req, async (err, fields, files) => {
       const { news_id } = fields;
-      await connection.query(`DELETE FROM news WHERE news_id = ${news_id}`);
+      await connection.query(
+        `DELETE FROM news WHERE news_id = ${news_id?.toString()}`
+      );
       res.status(200).json({ status: "success" });
     });
   }

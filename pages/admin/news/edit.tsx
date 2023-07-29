@@ -139,8 +139,8 @@ function Edit() {
                         .then(async (blob) => {
                           var formData = new FormData();
                           formData.append("file", blob, filename);
-                          var urlupload =
-                            process.env.NEXT_PUBLIC_BASE_URL_ADMIN_API;
+                          var urlupload = process.env.NEXT_PUBLIC_BASE_URL_API;
+                          console.log(urlupload);
                           const response: any = await axios.post(
                             `${urlupload}/tinyupload`,
                             formData

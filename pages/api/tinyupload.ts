@@ -41,15 +41,25 @@ router.post(
     form.parse(req, async (err, fields, files: any) => {
       const { banner_id, post_date, topic, status } = fields;
       const name =
-        Math.random().toString(16).slice(2) + "_" + files.file.originalFilename;
-      fs.copyFileSync(files.file.filepath, `public/upload/banner/${name}`);
+        Math.random().toString(16).slice(2) +
+        "_" +
+        files.file[0].originalFilename;
+      fs.copyFileSync(
+        files.file[0].filepath,
+        `public/upload/banner/${name.toString()}`
+      );
       await connection.query(
         "UPDATE banner SET filename = ? WHERE banner_id = ?",
-        [name, banner_id]
+        [name.toString(), banner_id.toString()]
       );
       await connection.query(
         "UPDATE banner SET post_date = ?, topic = ?, status = ? WHERE banner_id = ?",
-        [post_date, topic, status, banner_id]
+        [
+          post_date.toString(),
+          topic.toString(),
+          status.toString(),
+          banner_id.toString(),
+        ]
       );
       res.status(200).json({ status: "success" });
     });
@@ -64,11 +74,16 @@ router.post(
     console.log(host);
     form.parse(req, async (err, fields, files: any) => {
       const name =
-        Math.random().toString(16).slice(2) + "_" + files.file.originalFilename;
-      fs.copyFileSync(files.file.filepath, `public/upload/tinyupload/${name}`);
+        Math.random().toString(16).slice(2) +
+        "_" +
+        files.file[0].originalFilename;
+      fs.copyFileSync(
+        files.file[0].filepath,
+        `public/upload/tinyupload/${name}`
+      );
       res.status(200).json({
         status: "success",
-        location: `${host}/upload/tinyupload/${name}`,
+        location: `${host}/upload/tinyupload/${name.toString()}`,
         alt: name,
       });
     });
