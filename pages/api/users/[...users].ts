@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { adminAuth } from "@/pages/api/middleware";
 import connection from "@/mysql";
 import formidable from "formidable";
+import prisma from "@/prisma";
 const bcrypt = require("bcrypt");
 const fs = require("fs");
 const XLSX = require("xlsx");

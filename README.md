@@ -1,4 +1,4 @@
-Next.js + MySQL + Next-Connect
+Next.js + MySQL + Next-Connect + Prisma (DB) ORM
 
 ```bash
 yarn install
