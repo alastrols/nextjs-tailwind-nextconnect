@@ -37,6 +37,7 @@ import {
   sortableBanner,
 } from "@/features/admin/banner";
 import saveAsExcel from "@/features/admin/banner/export";
+import moment from "moment";
 
 const Banner: NextPage = () => {
   const dispatch = appDispatch();
@@ -352,7 +353,9 @@ const Banner: NextPage = () => {
                                         padding="none"
                                         align="center"
                                       >
-                                        {row.post_date}
+                                        {moment(row.post_date).format(
+                                          "YYYY-MM-DD"
+                                        )}
                                       </TableCell>
                                       <TableCell align="center">
                                         {row.topic}

@@ -30,6 +30,7 @@ import {
 } from "@/components/table/admin/news/TableHeads";
 import { getNews, deleteNews, deleteAllNews } from "@/features/admin/news";
 import saveAsExcel from "@/features/admin/news/export";
+import moment from "moment";
 
 const News: NextPage = () => {
   const dispatch = appDispatch();
@@ -298,7 +299,7 @@ const News: NextPage = () => {
                               padding="none"
                               align="center"
                             >
-                              {row.post_date}
+                              {moment(row.post_date).format("YYYY-MM-DD")}
                             </TableCell>
                             <TableCell align="center">{row.topic}</TableCell>
                             <TableCell align="center">{row.status}</TableCell>

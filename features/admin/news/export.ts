@@ -1,6 +1,6 @@
 import * as Excel from "exceljs";
 import { saveAs } from "file-saver";
-import axios from "axios";
+import moment from "moment";
 
 export default async function saveAsExcel({ rows }: any) {
   const wb = new Excel.Workbook();
@@ -16,7 +16,12 @@ export default async function saveAsExcel({ rows }: any) {
   await Promise.all(
     rows.map(async (item: any, index: any): Promise<any> => {
       const no = index + 1;
-      content = ws.addRow([no, item.post_date, item.topic, item.status]);
+      content = ws.addRow([
+        no,
+        moment(item.post_date).format("YYYY-MM-DD"),
+        item.topic,
+        item.status,
+      ]);
       content.height = 20;
     })
   );

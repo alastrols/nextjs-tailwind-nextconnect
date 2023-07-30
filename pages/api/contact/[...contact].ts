@@ -12,6 +12,7 @@ export const config = {
 };
 
 import { createRouter } from "next-connect";
+import prisma from "@/prisma";
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
 declare module "next" {
@@ -43,10 +44,15 @@ router.get(
   "/api/contact/lists",
   async (req: NextApiRequest, res: NextApiResponse, next: any) => {
     try {
-      const [response]: any = await connection.query(
-        `SELECT contact_id, fullname, company_name, phone_number, email, message, created_at, subject FROM contact 
-         ORDER BY created_at DESC`
-      );
+      // const [response]: any = await connection.query(
+      //   `SELECT contact_id, fullname, company_name, phone_number, email, message, created_at, subject FROM contact
+      //    ORDER BY created_at DESC`
+      // );
+      const response = await prisma.contact.findMany({
+        orderBy: {
+          created_at: "desc",
+        },
+      });
       res.status(200).json({ status: "success", data: response });
     } catch {
       res.status(200).json({ status: "error", message: "Invalid Token" });
@@ -59,17 +65,28 @@ router.get(
   async (req: NextApiRequest, res: NextApiResponse, next: any) => {
     const { keyword } = req.query;
     try {
-      const [response]: any = await connection.query(
-        `SELECT contact_id, fullname, company_name, phone_number, email, message, created_at, subject FROM contact 
-         WHERE fullname LIKE ? OR company_name LIKE ? OR phone_number LIKE ? OR email LIKE ? OR subject LIKE ? OR created_at LIKE ? ORDER BY created_at DESC`,
-        [
-          "%" + keyword?.toString() + "%",
-          "%" + keyword?.toString() + "%",
-          "%" + keyword?.toString() + "%",
-          "%" + keyword?.toString() + "%",
-          "%" + keyword?.toString() + "%",
-          "%" + keyword?.toString() + "%",
-        ]
+      // const [response]: any = await connection.query(
+      //   `SELECT contact_id, fullname, company_name, phone_number, email, message, created_at, subject FROM contact
+      //    WHERE fullname LIKE ? OR company_name LIKE ? OR phone_number LIKE ? OR email LIKE ? OR subject LIKE ? OR created_at LIKE ? ORDER BY created_at DESC`,
+      //   [
+      //     "%" + keyword?.toString() + "%",
+      //     "%" + keyword?.toString() + "%",
+      //     "%" + keyword?.toString() + "%",
+      //     "%" + keyword?.toString() + "%",
+      //     "%" + keyword?.toString() + "%",
+      //     "%" + keyword?.toString() + "%",
+      //   ]
+      // );
+
+      const response = await prisma.$queryRawUnsafe(
+        `SELECT contact_id, fullname, company_name, phone_number, email, message, created_at, subject FROM contact
+          WHERE fullname LIKE ? OR company_name LIKE ? OR phone_number LIKE ? OR email LIKE ? OR subject LIKE ? OR created_at LIKE ? ORDER BY created_at DESC`,
+        "%" + keyword?.toString() + "%",
+        "%" + keyword?.toString() + "%",
+        "%" + keyword?.toString() + "%",
+        "%" + keyword?.toString() + "%",
+        "%" + keyword?.toString() + "%",
+        "%" + keyword?.toString() + "%"
       );
       res.status(200).json({ status: "success", data: response });
     } catch {
@@ -81,13 +98,18 @@ router.get(
 router.get(
   "/api/contact/getbyid",
   async (req: NextApiRequest, res: NextApiResponse, next: any) => {
-    const { id } = req.query;
+    const { id }: any = req.query;
     try {
-      const [response]: any = await connection.query(
-        `SELECT contact_id, fullname, company_name, phone_number, email, message, created_at, subject
-         FROM contact WHERE contact_id = ?`,
-        [id?.toString()]
-      );
+      // const [response]: any = await connection.query(
+      //   `SELECT contact_id, fullname, company_name, phone_number, email, message, created_at, subject
+      //    FROM contact WHERE contact_id = ?`,
+      //   [id?.toString()]
+      // );
+      const response = await prisma.contact.findMany({
+        where: {
+          contact_id: id?.toString(),
+        },
+      });
       res.status(200).json({ status: "success", data: response });
     } catch {
       res.status(200).json({ status: "error", message: "Invalid Token" });
@@ -101,9 +123,14 @@ router.post(
     const form = formidable();
     form.parse(req, async (err, fields, files) => {
       const { contact_id } = fields;
-      await connection.query(
-        `DELETE FROM contact WHERE contact_id = ${contact_id.toString()}`
-      );
+      // await connection.query(
+      //   `DELETE FROM contact WHERE contact_id = ${contact_id.toString()}`
+      // );
+      await prisma.contact.delete({
+        where: {
+          contact_id: parseInt(contact_id.toString()),
+        },
+      });
       res.status(200).json({ status: "success" });
     });
   }
@@ -116,7 +143,10 @@ router.post(
     form.parse(req, async (err, fields, files) => {
       const { contact_id } = fields;
       let id = contact_id.toString();
-      await connection.query(`DELETE FROM contact WHERE contact_id IN (${id})`);
+      // await connection.query(`DELETE FROM contact WHERE contact_id IN (${id})`);
+      await prisma.$queryRawUnsafe(
+        `DELETE FROM contact WHERE contact_id IN (${id})`
+      );
       res.status(200).json({ status: "success" });
     });
   }

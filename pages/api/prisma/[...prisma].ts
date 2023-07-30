@@ -15,13 +15,20 @@ declare module "next" {
   }
 }
 router.get(
-  "/api/prisma/lists",
+  "/api/prisma/init",
   async (req: NextApiRequest, res: NextApiResponse, next: any) => {
-    // await prisma.user.create({
-    //   data: {
-    //     name: "Suphavit Bunnag 2",
-    //   },
-    // });
+    await prisma.users.create({
+      data: {
+        user_id: 1,
+        username: "admin",
+        password:
+          "$2b$12$bkgPnr8sf8J1YQy/BcwxEuQ1eeETvVsu7gxS4GvDZpYPmFhuXIwKO",
+        fullname: "Administrator",
+        email: "admin@noreply.co.th",
+        level: "Administrator",
+        status: "Active",
+      },
+    });
     try {
       // const users = await prisma.user.findUnique({
       //   where: {
@@ -29,7 +36,7 @@ router.get(
       //   },
       // });
       // const users = await prisma.user.findMany();
-      const users = await prisma.user.findMany();
+      const users = await prisma.users.findMany();
       res.status(200).json({ status: "success", data: users });
     } catch {
       res.status(200).json({ status: "error", message: "Invalid Token" });

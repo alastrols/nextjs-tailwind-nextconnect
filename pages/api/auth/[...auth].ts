@@ -40,6 +40,7 @@ interface Decoded {
 
 import { createRouter } from "next-connect";
 import { json } from "stream/consumers";
+import prisma from "@/prisma";
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
 // Middleware
@@ -58,11 +59,26 @@ router.post(
     const form = formidable();
     form.parse(req, async (err, fields, files) => {
       const { username, password }: Login = fields;
-      const [user]: any = await connection.query(
-        `SELECT user_id, username, password, fullname, email, level
-        FROM users
-        WHERE username = '${username?.toString()}' AND status = 'active' AND level = 'Administrator' `
-      );
+      // const [user]: any = await connection.query(
+      //   `SELECT user_id, username, password, fullname, email, level
+      //   FROM users
+      //   WHERE username = '${username?.toString()}' AND status = 'active' AND level = 'Administrator' `
+      // );
+      const user: any = await prisma.users.findMany({
+        where: {
+          AND: {
+            username: {
+              equals: username?.toString(),
+            },
+            status: {
+              equals: "Active",
+            },
+            level: {
+              equals: "Administrator",
+            },
+          },
+        },
+      });
       if (user.length > 0) {
         var passwordIsValid = bcrypt.compareSync(
           password?.toString(),

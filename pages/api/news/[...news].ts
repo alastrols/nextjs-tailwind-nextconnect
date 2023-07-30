@@ -2,9 +2,6 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { adminAuth } from "@/pages/api/middleware";
 import connection from "@/mysql";
 import formidable from "formidable";
-const bcrypt = require("bcrypt");
-const fs = require("fs");
-const XLSX = require("xlsx");
 export const config = {
   api: {
     bodyParser: false,
@@ -12,6 +9,8 @@ export const config = {
 };
 
 import { createRouter } from "next-connect";
+import prisma from "@/prisma";
+
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
 declare module "next" {
@@ -39,9 +38,20 @@ router.get(
   "/api/news/lists",
   async (req: NextApiRequest, res: NextApiResponse, next: any) => {
     try {
-      const [response]: any = await connection.query(
-        `SELECT news_id, post_date, topic, status FROM news ORDER BY post_date DESC, created_at DESC`
-      );
+      // const [response]: any = await connection.query(
+      //   `SELECT news_id, post_date, topic, status FROM news ORDER BY post_date DESC, created_at DESC`
+      // );
+      // res.status(200).json({ status: "success", data: response });
+      const response = await prisma.news.findMany({
+        orderBy: [
+          {
+            post_date: "desc",
+          },
+          {
+            created_at: "desc",
+          },
+        ],
+      });
       res.status(200).json({ status: "success", data: response });
     } catch {
       res.status(200).json({ status: "error", message: "Invalid Token" });
@@ -54,10 +64,17 @@ router.get(
   async (req: NextApiRequest, res: NextApiResponse, next: any) => {
     const { keyword } = req.query;
     try {
-      const [response]: any = await connection.query(
-        `SELECT news_id, post_date, topic, status FROM news 
-         WHERE post_date LIKE ? OR topic LIKE ? OR status LIKE ? ORDER BY post_date DESC, created_at DESC`,
-        ["%" + keyword + "%", "%" + keyword + "%", "%" + keyword + "%"]
+      // const [response]: any = await connection.query(
+      //   `SELECT news_id, post_date, topic, status FROM news
+      //    WHERE post_date LIKE ? OR topic LIKE ? OR status LIKE ? ORDER BY post_date DESC, created_at DESC`,
+      //   ["%" + keyword + "%", "%" + keyword + "%", "%" + keyword + "%"]
+      // );
+      // res.status(200).json({ status: "success", data: response });
+      const response = await prisma.$queryRawUnsafe(
+        "SELECT news_id, post_date, topic, status FROM news WHERE post_date LIKE ? OR topic LIKE ? OR status LIKE ? ORDER BY post_date DESC, created_at DESC",
+        "%" + keyword + "%",
+        "%" + keyword + "%",
+        "%" + keyword + "%"
       );
       res.status(200).json({ status: "success", data: response });
     } catch {
@@ -69,12 +86,19 @@ router.get(
 router.get(
   "/api/news/getbyid",
   async (req: NextApiRequest, res: NextApiResponse, next: any) => {
-    const { id } = req.query;
+    const { id }: any = req.query;
     try {
-      const [response]: any = await connection.query(
-        `SELECT news_id, post_date, topic, status, detail FROM news WHERE news_id = ?`,
-        [id?.toString()]
-      );
+      // const [response]: any = await connection.query(
+      //   `SELECT news_id, post_date, topic, status, detail FROM news WHERE news_id = ?`,
+      //   [id?.toString()]
+      // );
+
+      const response = await prisma.news.findMany({
+        where: {
+          news_id: parseInt(id),
+        },
+      });
+      console.log(response);
       res.status(200).json({ status: "success", data: response });
     } catch {
       res.status(200).json({ status: "error", message: "Invalid Token" });
@@ -87,17 +111,25 @@ router.put(
   async (req: NextApiRequest, res: NextApiResponse) => {
     const form = formidable();
     form.parse(req, async (err, fields, files) => {
-      const { post_date, topic, status, detail } = fields;
-      await connection.query(
-        `INSERT INTO news (post_date, topic, status, detail) 
-         VALUES (?, ?, ?, ?)`,
-        [
-          post_date?.toString(),
-          topic?.toString(),
-          status?.toString(),
-          detail?.toString(),
-        ]
-      );
+      const { post_date, topic, status, detail }: any = fields;
+      // await connection.query(
+      //   `INSERT INTO news (post_date, topic, status, detail)
+      //    VALUES (?, ?, ?, ?)`,
+      //   [
+      //     post_date?.toString(),
+      //     topic?.toString(),
+      //     status?.toString(),
+      //     detail?.toString(),
+      //   ]
+      // );
+      await prisma.news.create({
+        data: {
+          post_date: new Date(post_date?.toString()),
+          topic: topic?.toString(),
+          status: status?.toString(),
+          detail: detail?.toString(),
+        },
+      });
       res.status(200).json({ status: "success" });
     });
   }
@@ -108,17 +140,28 @@ router.post(
   async (req: NextApiRequest, res: NextApiResponse) => {
     const form = formidable();
     form.parse(req, async (err, fields, files) => {
-      const { news_id, post_date, topic, status, detail } = fields;
-      await connection.query(
-        `UPDATE news SET post_date = ?, topic = ?, status = ?, detail = ? WHERE news_id = ?`,
-        [
-          post_date?.toString(),
-          topic?.toString(),
-          status?.toString(),
-          detail?.toString(),
-          news_id?.toString(),
-        ]
-      );
+      const { news_id, post_date, topic, status, detail }: any = fields;
+      // await connection.query(
+      //   `UPDATE news SET post_date = ?, topic = ?, status = ?, detail = ? WHERE news_id = ?`,
+      //   [
+      //     post_date?.toString(),
+      //     topic?.toString(),
+      //     status?.toString(),
+      //     detail?.toString(),
+      //     news_id?.toString(),
+      //   ]
+      // );
+      await prisma.news.update({
+        data: {
+          post_date: new Date(post_date?.toString()),
+          topic: topic?.toString(),
+          status: status?.toString(),
+          detail: detail?.toString(),
+        },
+        where: {
+          news_id: parseInt(news_id),
+        },
+      });
       res.status(200).json({ status: "success" });
     });
   }
@@ -130,9 +173,14 @@ router.post(
     const form = formidable();
     form.parse(req, async (err, fields, files) => {
       const { news_id } = fields;
-      await connection.query(
-        `DELETE FROM news WHERE news_id = ${news_id?.toString()}`
-      );
+      // await connection.query(
+      //   `DELETE FROM news WHERE news_id = ${news_id?.toString()}`
+      // );
+      await prisma.news.delete({
+        where: {
+          news_id: parseInt(news_id?.toString()),
+        },
+      });
       res.status(200).json({ status: "success" });
     });
   }
@@ -143,9 +191,10 @@ router.post(
   async (req: NextApiRequest, res: NextApiResponse) => {
     const form = formidable();
     form.parse(req, async (err, fields, files) => {
-      const { news_id } = fields;
+      const { news_id }: any = fields;
       let id = news_id.toString();
-      await connection.query(`DELETE FROM news WHERE news_id IN (${id})`);
+      // await connection.query(`DELETE FROM news WHERE news_id IN (${id})`);
+      await prisma.$queryRawUnsafe(`DELETE FROM news WHERE news_id IN (${id})`);
       res.status(200).json({ status: "success" });
     });
   }

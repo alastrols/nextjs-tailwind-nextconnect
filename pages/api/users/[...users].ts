@@ -41,9 +41,25 @@ router.get(
   "/api/users/lists",
   async (req: NextApiRequest, res: NextApiResponse, next: any) => {
     try {
-      const [response]: any = await connection.query(
-        `SELECT user_id, fullname, email, username, level FROM users WHERE (status = "Active" AND username != "admin")  ORDER BY fullname ASC, created_at DESC`
-      );
+      // const [response]: any = await connection.query(
+      //   `SELECT user_id, fullname, email, username, level FROM users WHERE (status = "Active" AND username != "admin")  ORDER BY fullname ASC, created_at DESC`
+      // );
+      const response = await prisma.users.findMany({
+        where: {
+          status: "Active",
+          NOT: {
+            username: "admin",
+          },
+        },
+        orderBy: [
+          {
+            fullname: "asc",
+          },
+          {
+            created_at: "desc",
+          },
+        ],
+      });
       res.status(200).json({ status: "success", data: response });
     } catch {
       res.status(200).json({ status: "error", message: "Invalid Token" });
@@ -56,15 +72,21 @@ router.get(
   async (req: NextApiRequest, res: NextApiResponse, next: any) => {
     const { keyword } = req.query;
     try {
-      console.log(keyword);
-      const [response]: any = await connection.query(
+      // const [response]: any = await connection.query(
+      //   `SELECT user_id, fullname, email, username, level FROM users WHERE (status = "Active" AND username != "admin")  AND (fullname LIKE ? OR email LIKE ? OR username LIKE ? OR level LIKE ?) ORDER BY fullname ASC, created_at DESC`,
+      //   [
+      //     "%" + keyword + "%",
+      //     "%" + keyword + "%",
+      //     "%" + keyword + "%",
+      //     "%" + keyword + "%",
+      //   ]
+      // );
+      const response = await prisma.$queryRawUnsafe(
         `SELECT user_id, fullname, email, username, level FROM users WHERE (status = "Active" AND username != "admin")  AND (fullname LIKE ? OR email LIKE ? OR username LIKE ? OR level LIKE ?) ORDER BY fullname ASC, created_at DESC`,
-        [
-          "%" + keyword + "%",
-          "%" + keyword + "%",
-          "%" + keyword + "%",
-          "%" + keyword + "%",
-        ]
+        "%" + keyword + "%",
+        "%" + keyword + "%",
+        "%" + keyword + "%",
+        "%" + keyword + "%"
       );
       res.status(200).json({ status: "success", data: response });
     } catch {
@@ -76,12 +98,30 @@ router.get(
 router.get(
   "/api/users/getbyid",
   async (req: NextApiRequest, res: NextApiResponse, next: any) => {
-    const { id } = req.query;
+    const { id }: any = req.query;
     try {
-      const [response]: any = await connection.query(
-        `SELECT user_id, fullname, email, username, level FROM users WHERE status = "Active" AND username != "admin" AND user_id = ?`,
-        [id]
-      );
+      // const [response]: any = await connection.query(
+      //   `SELECT user_id, fullname, email, username, level FROM users WHERE status = "Active" AND username != "admin" AND user_id = ?`,
+      //   [id]
+      // );
+      const response = await prisma.users.findMany({
+        where: {
+          AND: [
+            {
+              status: {
+                equals: "Active",
+              },
+              user_id: {
+                equals: parseInt(id),
+              },
+            },
+          ],
+          NOT: {
+            username: "admin",
+          },
+        },
+      });
+      console.log(response);
       res.status(200).json({ status: "success", data: response });
     } catch {
       res.status(200).json({ status: "error", message: "Invalid Token" });
@@ -94,19 +134,34 @@ router.put(
   async (req: NextApiRequest, res: NextApiResponse) => {
     const form = formidable();
     form.parse(req, async (err, fields, files) => {
-      const { username, password, fullname, email, level } = fields;
+      const { username, password, fullname, email, level }: any = fields;
       await connection.query("ALTER TABLE users AUTO_INCREMENT = 1");
       const [check]: any = await connection.query(
         "SELECT * FROM users WHERE username = ? AND status = ? ",
-        [username, "active"]
+        [username.toString(), "active"]
       );
       if (check.length === 0) {
-        const hashSync = bcrypt.hashSync(password, 12);
-        await connection.query(
-          "INSERT INTO users (username, password, fullname, email, level) " +
-            " VALUES (?, ?, ?, ?, ?)",
-          [username, hashSync, fullname, email, level]
-        );
+        const hashSync = bcrypt.hashSync(password.toString(), 12);
+        // await connection.query(
+        //   "INSERT INTO users (username, password, fullname, email, level) " +
+        //     " VALUES (?, ?, ?, ?, ?)",
+        //   [
+        //     username.toString(),
+        //     hashSync,
+        //     fullname.toString(),
+        //     email.toString(),
+        //     level.toString(),
+        //   ]
+        // );
+        await prisma.users.create({
+          data: {
+            username: username.toString(),
+            password: hashSync,
+            fullname: fullname.toString(),
+            email: email.toString(),
+            level: level.toString(),
+          },
+        });
         res.status(200).json({ status: "success" });
       } else {
         res
@@ -122,24 +177,59 @@ router.post(
   async (req: NextApiRequest, res: NextApiResponse) => {
     const form = formidable();
     form.parse(req, async (err, fields, files) => {
-      const { user_id, username, password, fullname, email, level } = fields;
-      const [check]: any = await connection.query(
-        "SELECT user_id FROM users WHERE status = 'active' AND user_id != ? AND username = ?",
-        [user_id, username]
-      );
+      const { user_id, username, password, fullname, email, level }: any =
+        fields;
+      // const [check]: any = await connection.query(
+      //   "SELECT user_id FROM users WHERE status = 'active' AND user_id != ? AND username = ?",
+      //   [user_id, username.toString()]
+      // );
+      const check = await prisma.users.findMany({
+        where: {
+          AND: {
+            status: {
+              equals: "Active",
+            },
+            username: {
+              equals: username.toString(),
+            },
+          },
+          NOT: {
+            user_id: parseInt(user_id),
+          },
+        },
+      });
 
       if (check.length === 0) {
         if (password != "") {
-          const hashSync = bcrypt.hashSync(password, 12);
-          await connection.query(
-            "UPDATE users SET password = ? WHERE user_id = ?",
-            [hashSync, user_id]
-          );
+          const hashSync = bcrypt.hashSync(password.toString(), 12);
+          // await connection.query(
+          //   "UPDATE users SET password = ? WHERE user_id = ?",
+          //   [hashSync, user_id]
+          // );
+          await prisma.users.update({
+            data: {
+              password: hashSync,
+            },
+            where: {
+              user_id: parseInt(user_id.toString()),
+            },
+          });
         }
-        await connection.query(
-          "UPDATE users SET username = ?, fullname = ?, email = ?, level = ? WHERE user_id = ?",
-          [username, fullname, email, level, user_id]
-        );
+        // await connection.query(
+        //   "UPDATE users SET username = ?, fullname = ?, email = ?, level = ? WHERE user_id = ?",
+        //   [username, fullname, email, level, user_id]
+        // );
+        await prisma.users.update({
+          data: {
+            username: username.toString(),
+            fullname: fullname.toString(),
+            email: email.toString(),
+            level: level.toString(),
+          },
+          where: {
+            user_id: parseInt(user_id.toString()),
+          },
+        });
         res.status(200).json({ status: "success" });
       } else {
         res
@@ -156,9 +246,14 @@ router.post(
     const form = formidable();
     form.parse(req, async (err, fields, files) => {
       const { user_id } = fields;
-      await connection.query(
-        `UPDATE users SET status = "Inactive" WHERE user_id = ${user_id}`
-      );
+      // await connection.query(
+      //   `UPDATE users SET status = "Inactive" WHERE user_id = ${user_id}`
+      // );
+      await prisma.users.delete({
+        where: {
+          user_id: parseInt(user_id?.toString()),
+        },
+      });
       res.status(200).json({ status: "success" });
     });
   }
@@ -170,10 +265,12 @@ router.post(
     const form = formidable();
     form.parse(req, async (err, fields, files) => {
       const { user_id } = fields;
-      console.log(user_id);
       let id = user_id.toString();
-      await connection.query(
-        `UPDATE users SET status = "Inactive" WHERE user_id IN (${id})`
+      // await connection.query(
+      //   `UPDATE users SET status = "Inactive" WHERE user_id IN (${id})`
+      // );
+      await prisma.$queryRawUnsafe(
+        `DELETE FROM users WHERE user_id IN (${id})`
       );
       res.status(200).json({ status: "success" });
     });
@@ -186,11 +283,11 @@ router.post(
     const form = formidable();
     form.parse(req, async (err, fields, files: any) => {
       fs.copyFileSync(
-        files.file.filepath,
-        `public/upload/users/${files.file.originalFilename}`
+        files.file[0].filepath,
+        `public/upload/users/${files.file[0].originalFilename}`
       );
       var reponse = await importExcelUser(
-        `public/upload/users/${files.file.originalFilename}`
+        `public/upload/users/${files.file[0].originalFilename}`
       ).then((result) => {
         return result;
       });
@@ -216,17 +313,40 @@ async function importExcelUser(url: string) {
       const email = rows["Email"];
       const username = rows["Username"];
       const pass = rows["Password"];
-      const [check]: any = await connection.query(
-        "SELECT user_id FROM users WHERE status = 'active' AND username = ? ",
-        [username]
-      );
+      // const [check]: any = await connection.query(
+      //   "SELECT user_id FROM users WHERE status = 'active' AND username = ? ",
+      //   [username]
+      // );
+      const check = await prisma.users.findMany({
+        where: {
+          AND: {
+            status: {
+              equals: "Active",
+            },
+            username: {
+              equals: username.toString(),
+            },
+          },
+        },
+      });
       if (check.length == 0) {
         var hashedPassword = await bcrypt.hashSync(String(pass), 12);
         var password = hashedPassword;
-        const [add] = await connection.query(
-          "INSERT INTO users (fullname , username ,  password , email, status, level) VALUES (? , ? , ? , ? , ? , ?)",
-          [fullname, username, password, email, "active", "User"]
-        );
+        // const [add] = await connection.query(
+        //   "INSERT INTO users (fullname , username ,  password , email, status, level) VALUES (? , ? , ? , ? , ? , ?)",
+        //   [fullname, username, password, email, "active", "User"]
+        // );
+
+        await prisma.users.create({
+          data: {
+            fullname: fullname,
+            password: password,
+            username: username,
+            email: email,
+            status: "Active",
+            level: "User",
+          },
+        });
       } else {
         status = "duplicate";
       }
