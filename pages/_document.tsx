@@ -4,10 +4,9 @@ import Script from "next/script";
 export default function Document() {
   return (
     <Html lang="en">
-      <Head>
-      </Head>
+      <Head></Head>
       <body>
-        <title></title>
+        <title>Website</title>
         <meta name="description" content="SEO Desctiption" />
         <Main />
         <NextScript />

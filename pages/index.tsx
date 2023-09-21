@@ -13,7 +13,7 @@ const SLIDES = Array.from(Array(SLIDE_COUNT).keys());
 function Index() {
   return (
     <div className="wrapper">
-      <Header />
+      {/* <Header /> */}
       <section className="carousel">
         {/* <section className="sandbox__carousel">
           <EmblaCarousel slides={SLIDES} options={OPTIONS} />
