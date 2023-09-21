@@ -122,7 +122,7 @@ router.post(
   async (req: NextApiRequest, res: NextApiResponse) => {
     const form = formidable();
     form.parse(req, async (err, fields, files) => {
-      const { contact_id } = fields;
+      const { contact_id }: any = fields;
       // await connection.query(
       //   `DELETE FROM contact WHERE contact_id = ${contact_id.toString()}`
       // );
@@ -141,7 +141,7 @@ router.post(
   async (req: NextApiRequest, res: NextApiResponse) => {
     const form = formidable();
     form.parse(req, async (err, fields, files) => {
-      const { contact_id } = fields;
+      const { contact_id }: any = fields;
       let id = contact_id.toString();
       // await connection.query(`DELETE FROM contact WHERE contact_id IN (${id})`);
       await prisma.$queryRawUnsafe(

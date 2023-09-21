@@ -245,7 +245,7 @@ router.post(
   async (req: NextApiRequest, res: NextApiResponse) => {
     const form = formidable();
     form.parse(req, async (err, fields, files) => {
-      const { user_id } = fields;
+      const { user_id }: any = fields;
       // await connection.query(
       //   `UPDATE users SET status = "Inactive" WHERE user_id = ${user_id}`
       // );
@@ -264,7 +264,7 @@ router.post(
   async (req: NextApiRequest, res: NextApiResponse) => {
     const form = formidable();
     form.parse(req, async (err, fields, files) => {
-      const { user_id } = fields;
+      const { user_id }: any = fields;
       let id = user_id.toString();
       // await connection.query(
       //   `UPDATE users SET status = "Inactive" WHERE user_id IN (${id})`

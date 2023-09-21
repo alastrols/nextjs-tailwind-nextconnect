@@ -51,7 +51,6 @@ const Banner: NextPage = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const rows: any = data ?? [];
-
   // *************************** Use Effect ***************************
   React.useEffect(() => {
     dispatch(getBanner(""));
@@ -252,6 +251,11 @@ const Banner: NextPage = () => {
       <TextField
         fullWidth
         value={searched}
+        type="text"
+        inputProps={{
+          autoComplete: "off",
+        }}
+        name="search"
         label="Search..."
         onChange={(e: React.ChangeEvent<any>) => {
           e.preventDefault();

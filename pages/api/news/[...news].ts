@@ -172,7 +172,7 @@ router.post(
   async (req: NextApiRequest, res: NextApiResponse) => {
     const form = formidable();
     form.parse(req, async (err, fields, files) => {
-      const { news_id } = fields;
+      const { news_id }: any = fields;
       // await connection.query(
       //   `DELETE FROM news WHERE news_id = ${news_id?.toString()}`
       // );

@@ -43,7 +43,7 @@ router.get(
       // );
       const response = await prisma.banner.findMany({
         where: {
-          status: "Active",
+          active: "Yes",
         },
         orderBy: [
           {
@@ -232,7 +232,7 @@ router.post(
   async (req: NextApiRequest, res: NextApiResponse) => {
     const form = formidable();
     form.parse(req, async (err, fields, files) => {
-      const { banner_id } = fields;
+      const { banner_id }: any = fields;
       // await connection.query(
       //   `UPDATE banner SET active = "No" WHERE banner_id = ${banner_id.toString()}`
       // );
@@ -254,7 +254,7 @@ router.post(
   async (req: NextApiRequest, res: NextApiResponse) => {
     const form = formidable();
     form.parse(req, async (err, fields, files) => {
-      const { banner_id } = fields;
+      const { banner_id }: any = fields;
       let id = banner_id.toString();
       // await connection.query(
       //   `UPDATE banner SET active = "No" WHERE banner_id IN (${id})`

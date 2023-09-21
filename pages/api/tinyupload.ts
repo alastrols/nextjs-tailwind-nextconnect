@@ -39,7 +39,7 @@ router.post(
   async (req: NextApiRequest, res: NextApiResponse) => {
     const form = formidable();
     form.parse(req, async (err, fields, files: any) => {
-      const { banner_id, post_date, topic, status } = fields;
+      const { banner_id, post_date, topic, status }: any = fields;
       const name =
         Math.random().toString(16).slice(2) +
         "_" +

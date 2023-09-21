@@ -17,6 +17,8 @@ import "../public/static/css/embla.css";
 function MyApp({ Component, pageProps }: AppProps) {
   const store: any = useStore();
   const dispatch = appDispatch();
+  const state = store.getState();
+  // console.log(state);
   return (
     <Provider store={store}>
       <PersistGate persistor={store.__persistor} loading={null}>
