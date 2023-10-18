@@ -8,6 +8,8 @@ WORKDIR /app
 COPY . /app
 
 RUN yarn install
+# RUN npx prisma migrate dev --name init
+# RUN npx prisma generate
 RUN npx prisma generate
 ENTRYPOINT ["yarn", "dev"]
 
